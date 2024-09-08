@@ -1,0 +1,28 @@
+import subprocess
+import os
+
+def convert_to_pdbqt_with_openbabel(pdb_file, output_folder):
+    output_pdbqt = os.path.join(output_folder, os.path.basename(pdb_file).replace(".pdb", ".pdbqt"))
+    
+    # OpenBabel을 사용하여 PDB를 PDBQT로 변환
+    try:
+        result = subprocess.run(["obabel", pdb_file, "-O", output_pdbqt], 
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, check=True)
+        print(result.stdout)
+    except subprocess.CalledProcessError as e:
+        print(f"Error occurred: {e.stderr}")
+
+# PDB 파일들이 있는 폴더와 출력 폴더 설정
+pdb_file_folder = "C:/Users/USER/Downloads/open/output_pdb_files/"
+output_folder = "C:/Users/USER/Downloads/open/path_to_output_folder"
+
+# 출력 폴더 생성 (없으면)
+os.makedirs(output_folder, exist_ok=True)
+
+# 폴더 내 모든 PDB 파일을 처리
+for file_name in os.listdir(pdb_file_folder):
+    if file_name.endswith(".pdb"):
+        pdb_file_path = os.path.join(pdb_file_folder, file_name)
+        convert_to_pdbqt_with_openbabel(pdb_file_path, output_folder)
+
+print("All PDB files have been processed.")
